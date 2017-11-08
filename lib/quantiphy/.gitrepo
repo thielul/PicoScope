@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/KenKundert/quantiphy
+	branch = master
+	commit = 187258832737f82fb0855e6008210a28cbbf249a
+	parent = 63e2fb01afb6844f283420a9c1c39bc36348fc91
+	cmdver = 0.3.1
