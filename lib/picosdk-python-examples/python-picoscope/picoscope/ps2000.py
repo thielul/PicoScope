@@ -15,7 +15,7 @@
 """
 
 from ps3000base import *
-from picoscope import ps3000base
+import ps3000base
 
 name = "ps2000"
 _libps2000 = psloadlib(name)

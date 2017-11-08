@@ -14,7 +14,7 @@
 
 from picoscope.ps5000base import *
 from psutils import *
-from picoscope import ps5000base
+import ps5000base
 
 
 class Info(dict2class):

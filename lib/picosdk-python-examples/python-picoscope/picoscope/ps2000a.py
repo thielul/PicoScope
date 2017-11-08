@@ -16,7 +16,7 @@
 
 from ps5000base import *
 from psutils import *
-from picoscope import ps5000base
+import ps5000base
 
 name = "ps2000a"
 _libps2000a = psloadlib(name)
@@ -646,7 +646,7 @@ class Device(PS5000Device):
             self.info.num_channels = 2
             self.info.num_ports = 2
             self.info.awg_size = 8192
-        elif self.info.variant_info == "2206":
+        elif self.info.variant_info == "2206B":
             self.info.num_channels = 2
             self.info.num_ports = 0
             self.info.awg_size = 8192
@@ -654,7 +654,7 @@ class Device(PS5000Device):
             self.info.num_channels = 2
             self.info.num_ports = 0
             self.info.awg_size = 8192
-        elif self.info.variant_info == "2207":
+        elif self.info.variant_info == "2207B":
             self.info.num_channels = 2
             self.info.num_ports = 0
             self.info.awg_size = 8192
@@ -662,7 +662,7 @@ class Device(PS5000Device):
             self.info.num_channels = 2
             self.info.num_ports = 0
             self.info.awg_size = 8192
-        elif self.info.variant_info == "2208":
+        elif self.info.variant_info == "2208B":
             self.info.num_channels = 2
             self.info.num_ports = 0
             self.info.awg_size = 8192

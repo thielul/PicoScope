@@ -26,7 +26,17 @@ import warnings
 import multiprocessing
 from exceptions import AttributeError, OSError, TypeError
 from copy import deepcopy
-from picoscope.picostatus import pico_num
+from picostatus import pico_num
+
+###############################################################################
+# Mac OS X fix to get around SIP
+# You need to place the PicoScope libraries into the picolibs directory
+###############################################################################
+from sys import platform
+
+if platform == "darwin":
+    os.environ["DYLD_LIBRARY_PATH"] = os.path.dirname(os.path.realpath(__file__))+"/../../../picolibs"
+###############################################################################
 
 """ disable warnings from PyTables """
 for cat in ("UndoRedoWarning", "NaturalNameWarning", "PerformanceWarning", "FlavorWarning", "FiltersWarning",
