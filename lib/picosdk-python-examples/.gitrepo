@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/picotech/picosdk-python-examples
+	branch = master
+	commit = e2c76ff9989a27428bc68bb37615e958f92df7bc
+	parent = 6dba3c6a52e29dac03a8262eed558b6d2e753f55
+	cmdver = 0.3.1
