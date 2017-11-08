@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/peterbrittain/asciimatics
+	branch = master
+	commit = 87ef39533969e861180d8e1bfd42f6730c7767d4
+	parent = e82885d516a0a139846ccba35a9c387d5d7330c8
+	cmdver = 0.3.1

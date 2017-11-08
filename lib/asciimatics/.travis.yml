@@ -1,0 +1,19 @@
+language: python
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install -U coveralls appveyor-artifacts mock
+# command to run tests
+script:
+  nosetests --with-coverage --cover-package=asciimatics
+after_success:
+  - mv .coverage .coverage.travis
+  - appveyor-artifacts download
+  - python coverage_fix.py */.coverage
+  - coverage combine .coverage.travis */.coverage
+  - coveralls
