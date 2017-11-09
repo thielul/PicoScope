@@ -1,10 +1,10 @@
 import sys
 
-sys.path.append("lib/picosdk-python-examples/python-picoscope/picoscope/")
+sys.path.insert(0, "lib/picosdk-python-examples/python-picoscope/picoscope/")
 import ps2000a as ps
 from picostatus import pico_num
 
-sys.path.append("lib/asciimatics/")
+sys.path.insert(0, "lib/asciimatics/")
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.widgets import Label, Frame, ListBox, Layout, Divider, Text, \
     Button, TextBox, Widget, PopUpDialog
@@ -12,7 +12,7 @@ from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.exceptions import ResizeScreenError, NextScene, StopApplication
 
-sys.path.append("lib/quantiphy/")
+sys.path.insert(0, "lib/quantiphy/")
 from quantiphy import Quantity
 
 import threading
@@ -138,7 +138,7 @@ class MainView(Frame):
     	#self._initializeScope()
         
         # Needed to force screen update later
-        self.screen=screen
+        #self.screen=screen
                
 	###########################################################################
     # Set up scope connection and initialize it
