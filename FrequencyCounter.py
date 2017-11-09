@@ -49,7 +49,7 @@ class MainView(Frame):
         
         self.channelBox = ListBox(1,[],label="Channel: ")
         self.rangeBox = ListBox(1,[],label="Range: ")
-        self.overVoltagedLabel = Label("Overvoltage: ")
+        self.overVoltagedLabel = Label("Overvolt.: ")
         self.couplingBox = ListBox(1,[],label="Coupling: ")
         self.offsetText = Text("Offset: ")
         
@@ -226,7 +226,11 @@ class MainView(Frame):
         state.enabled = True
         self.scope.set_channel(self.channel, state)
         
-       
+       	status, state = self.scope.get_channel_state(channel=self.channel)
+       	if state.overvoltaged:
+       		self.overVoltagedLabel._text = "Overvolt.:   Yes"
+       	else:
+       		self.overVoltagedLabel._text = "Overvolt.:   No"
         
     ###########################################################################
     # Time base text field changed
@@ -491,7 +495,7 @@ class MainView(Frame):
 			self.gatesLabel._text = "Gates:     %s" % Quantity(self.gateCounter).render()
 			self.timeLabel._text = "Time:      %s" % Quantity(self.timeCounter,"s").render()
 			self.totalSamplesLabel._text = "Samples:   %s" % Quantity(self.sampleCounter,"S").render()
-			
+					
 			self.screen.force_update()
 			
 		
