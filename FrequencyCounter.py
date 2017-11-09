@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import matplotlib.patches as mpatches
 import warnings
+from lib.resolution import *
 
 class MainView(Frame):
     
@@ -470,15 +471,18 @@ class MainView(Frame):
 			status = self.scope.collect_segment(segment=0,timebase=self.timebase)
 			status, data = self.scope.get_buffer_volts(0)
 			
-					
 			freq = float(self._number_of_crossings(data,0.0))/self.gate
-			#freq = round(freq,9)
+			freq = TruncateToResolution(freq, self.resolution)
 			self.frequencies = np.append(self.frequencies, freq)
-			#freq = Quantity(freq, "Hz")
-			#freq.set_prefs(strip_zeros=False,prec=)
-		
-			self.frequencyLabel._text = "Frequency: %s" % Quantity(freq, "Hz").render()
-			self.meanLabel._text = "Average:   %s" % Quantity(self.frequencies.mean(), "Hz").render()
+			freq = Quantity(freq, "Hz")
+			freq = SetPrecisionToResolution(freq, self.resolution)
+			
+			self.frequencyLabel._text = "Frequency: %s" % freq.render()
+			
+			avg = Quantity(self.frequencies.mean(), "Hz")
+			avg = SetPrecisionToResolution(avg, self.resolution/10.0)
+			self.meanLabel._text = "Average:   %s" % avg.render()
+			
 			self.stdLabel._text = "Deviation: %s" % Quantity(self.frequencies.std(), "Hz").render()
 			
 			self.gateCounter += 1
