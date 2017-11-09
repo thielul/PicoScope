@@ -541,6 +541,16 @@ class MainView(Frame):
 		# layout
 		fig.set_tight_layout(True)
 		plt.rcParams.update({'font.size': 8})
+		
+		avg = Quantity(self.frequencies.mean(), "Hz")
+		avg = SetPrecisionToResolution(avg, self.resolution/10.0)
+		std = Quantity(self.frequencies.std(), "Hz")
+		
+		ax.annotate("Sample rate: %s, gate time: %s\nmean: %s, std: %s" % (Quantity(self.rate, "Hz").render(), Quantity(self.gate, "s").render(), avg.render(), std.render()), xy=(1, 0), xycoords='axes fraction', fontsize=8, xytext=(-5, 5), textcoords='offset points', ha='right', va='bottom')
+		
+		# axis labels
+		plt.xlabel("Gate #")
+		plt.ylabel("Frequency [Hz]")
 
 		#PYTHON....There's a matplotlib bug coming up here'
 		with warnings.catch_warnings():
