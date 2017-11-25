@@ -25,6 +25,9 @@ import matplotlib.patches as mpatches
 import warnings
 from lib.resolution import *
 
+import time
+import csv
+
 class MainView(Frame):
     
     ###########################################################################
@@ -61,7 +64,6 @@ class MainView(Frame):
         self.resolutionBox = ListBox(1,[],label="Resolution: ",on_change=self._resolution_changed)
         
         self.frequencyLabel = Label("Frequency: ")
-        self.frequencyResolutionErrrorLabel = Label("Resolution Error: ")
         self.meanLabel = Label("Mean: ")
         self.stdLabel = Label("Deviation: ")
         self.gatesLabel = Label("Gates: ")
@@ -124,7 +126,7 @@ class MainView(Frame):
         self.plotButton.disabled = True
         layout.add_widget(self.plotButton, 2)
         
-        self.saveButton = Button("Save", self._quit)
+        self.saveButton = Button("Save", self._save)
         self.saveButton.disabled = True
         layout.add_widget(self.saveButton, 3)
         
@@ -451,6 +453,7 @@ class MainView(Frame):
     def _start(self):
     	self._update_channels()
     	self.frequencies = np.array([])
+    	self.times = np.array([])
     	self.gateCounter = 0
     	self.timeCounter = 0
     	self.sampleCounter = 0
@@ -459,6 +462,7 @@ class MainView(Frame):
     	self.collectThread.daemon = True
     	self.stopButton.disabled = False
     	self.startButton.disabled = True
+    	self.saveButton.disabled = True
     	self.plotButton.disabled = True
         self.collectThread.start()
            	
@@ -471,9 +475,13 @@ class MainView(Frame):
                                 downsample=0)
 		
 		while self.stopRequested == False:
-                                
+		
+			starttime = time.time()                                
 			status = self.scope.collect_segment(segment=0,timebase=self.timebase)
 			status, data = self.scope.get_buffer_volts(0)
+			endtime = time.time()
+			self.timeCounter += endtime-starttime
+			self.times = np.append(self.times, self.timeCounter)
 			
 			freq = float(self._number_of_crossings(data,0.0))/self.gate
 			freq = TruncateToResolution(freq, self.resolution)
@@ -482,6 +490,11 @@ class MainView(Frame):
 			freq = SetPrecisionToResolution(freq, self.resolution)
 			
 			self.frequencyLabel._text = "Frequency: %s" % freq.render()
+			#try:
+			#	freqDerivative = np.gradient(self.frequencies)[-1]
+			#	self.frequencyDerivativeLabel._text = "Frequency': %s" % freqDerivative
+			#except:
+			#	None
 			
 			avg = Quantity(self.frequencies.mean(), "Hz")
 			avg = SetPrecisionToResolution(avg, self.resolution/10.0)
@@ -490,7 +503,6 @@ class MainView(Frame):
 			self.stdLabel._text = "Deviation: %s" % Quantity(self.frequencies.std(), "Hz").render()
 			
 			self.gateCounter += 1
-			self.timeCounter += self.gate
 			self.sampleCounter += self.samples
 			self.gatesLabel._text = "Gates:     %s" % Quantity(self.gateCounter).render()
 			self.timeLabel._text = "Time:      %s" % Quantity(self.timeCounter,"s").render()
@@ -502,6 +514,7 @@ class MainView(Frame):
 		self.stopButton.disabled = True
 		self.startButton.disabled = False
 		self.plotButton.disabled = False
+		self.saveButton.disabled = False
 		
 	###########################################################################
     # Stop collect
@@ -530,7 +543,7 @@ class MainView(Frame):
     	# create plot
 		fig = plt.figure()
 		ax = plt.subplot(111)
-		ax.scatter(range(0,len(self.frequencies)),self.frequencies, color="#00A2FF", label='Frequency')
+		ax.scatter(self.times, self.frequencies, color="#00A2FF", label='Frequency')
 
 		# grid
 		plt.grid(b=True, which='major', color='k', linestyle='-', alpha=0.2, linewidth=0.3)
@@ -553,14 +566,25 @@ class MainView(Frame):
 		ax.annotate("Sample rate: %s, gate time: %s\nmean: %s, std: %s" % (Quantity(self.rate, "Hz").render(), Quantity(self.gate, "s").render(), avg.render(), std.render()), xy=(1, 0), xycoords='axes fraction', fontsize=8, xytext=(-5, 5), textcoords='offset points', ha='right', va='bottom')
 		
 		# axis labels
-		plt.xlabel("Gate #")
+		plt.xlabel("Time [s]")
 		plt.ylabel("Frequency [Hz]")
 
 		#PYTHON....There's a matplotlib bug coming up here'
 		with warnings.catch_warnings():
 			warnings.simplefilter(action='ignore', category=FutureWarning)
 			plt.show()
-
+			
+	###########################################################################
+    # Save data
+    ###########################################################################	
+    def _save(self):
+    	
+    	with open('data.csv', 'w') as f:
+    		fieldnames = ['Time', 'Frequency']
+    		writer = csv.DictWriter(f, fieldnames=fieldnames)
+    		for i in range(0,len(self.frequencies)):
+    			writer.writerow({"Time":self.times[i], "Frequency":self.frequencies[i]})
+    	
     
     ###########################################################################
     # Quit application (close scope connection first)
